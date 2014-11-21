@@ -36,4 +36,4 @@ TODO
 * Fix `make` and add `make install`
 * Write some tests for Opus.Encoder.Encode and Opus.Decoder.Decode
 * Bind `opus_decode_float` and `opus_encode_float`
-* Bind `opus_decoder_get_nb_samples`, `opus_pcm_soft_clip`
+* Bind `opus_decoder_get_nb_samples` and `opus_pcm_soft_clip`

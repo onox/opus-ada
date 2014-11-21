@@ -82,6 +82,8 @@ package body Opus.Decoders is
       Check_Error (Error);
    end Set_Request;
 
+   ----------------------------------------------------------------------------
+
    function Create
      (Frequency : in Sampling_Rate;
       Channels  : in Channel_Type) return Decoder_Data
@@ -150,6 +152,8 @@ package body Opus.Decoders is
    begin
       Check_Error (Error);
    end Reset_State;
+
+   ----------------------------------------------------------------------------
 
    function Get_Bandwidth (Decoder : in Decoder_Data) return Bandwidth is
       function Internal_Get_Bandwidth is new Get_Request (Get_Bandwidth_Request, Bandwidth);

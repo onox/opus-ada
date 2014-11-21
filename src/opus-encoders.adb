@@ -136,6 +136,8 @@ package body Opus.Encoders is
       Check_Error (Error);
    end Set_Request;
 
+   ----------------------------------------------------------------------------
+
    function Create
      (Frequency   : in Sampling_Rate;
       Channels    : in Channel_Type;
@@ -213,6 +215,8 @@ package body Opus.Encoders is
    begin
       Check_Error (Error);
    end Reset_State;
+
+   ----------------------------------------------------------------------------
 
    procedure Internal_Set_Application is new Set_Request (Set_Application_Request, Application_Type);
    procedure Set_Application
@@ -402,7 +406,6 @@ package body Opus.Encoders is
    end Get_Lookahead;
 
    function Internal_Get_Sample_Rate is new Get_Request (Get_Sample_Rate_Request, Sampling_Rate);
-
    function Get_Sample_Rate (Encoder : in Encoder_Data) return Sampling_Rate
       renames Internal_Get_Sample_Rate;
 
