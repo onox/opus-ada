@@ -1,0 +1,55 @@
+--  Copyright (c) 2014 onox <denkpadje@gmail.com>
+--
+--  Permission to use, copy, modify, and/or distribute this software for any
+--  purpose with or without fee is hereby granted, provided that the above
+--  copyright notice and this permission notice appear in all copies.
+--
+--  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+--  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+--  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+--  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+--  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+--  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+--  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+with "config";
+with "external_opus_lib";
+
+project Opus_Ada_Lib is
+
+   Version := "1.1";
+
+   for Languages use ("Ada");
+
+   for Source_Dirs use ("src");
+   for Object_Dir  use "build";
+
+   for Library_Name use "opus_ada";
+   for Library_Dir  use "lib";
+   for Library_Kind use "relocatable";
+
+   package Builder is
+      for Switches (others) use ("-j" & Config.Processors);
+   end Builder;
+
+   package Compiler is
+      case Config.Build is
+         when "debug" =>
+            for Default_Switches ("Ada") use Config.Ada_Switches_Compiler_Debug;
+         when "release" =>
+            for Default_Switches ("Ada") use Config.Ada_Switches_Compiler_Release;
+      end case;
+
+      for Local_Configuration_Pragmas use "gnat.adc";
+   end Compiler;
+
+   package Binder is
+      case Config.Build is
+         when "debug" =>
+            for Default_Switches ("Ada") use Config.Ada_Switches_Binder_Debug;
+         when "release" =>
+            for Default_Switches ("Ada") use Config.Ada_Switches_Binder_Release;
+      end case;
+   end Binder;
+
+end Opus_Ada_Lib;
