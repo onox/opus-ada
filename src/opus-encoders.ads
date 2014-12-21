@@ -122,9 +122,7 @@ package Opus.Encoders is
       Rate    : in Bitrate)
    with
       Pre => (if Get_Channels (Encoder) = Mono then
-                 Rate <= Maximum_Mono_Bitrate
-              elsif Get_Channels (Encoder) = Stereo then
-                 Rate <= Maximum_Stereo_Bitrate);
+                 Rate <= Maximum_Mono_Bitrate);
    --  Set bitrate in bits per second (b/s)
 
    function Get_Bitrate (Encoder : in Encoder_Data) return Bitrate;
