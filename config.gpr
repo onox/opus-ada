@@ -38,7 +38,6 @@ abstract project Config is
    Hardening_Switches := (
       "-Werror=format-security",
       "-U_FORTIFY_SOURCE", "-D_FORTIFY_SOURCE=2",
-      "-fPIE",
       "-Wl,-z,now"
    );
 

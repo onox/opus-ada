@@ -1,4 +1,4 @@
-GNATMAKE=gnatmake -gnatv -P
+GNATMAKE=gnatmake -gnatv -p -P
 
 GNATCLEAN=gnatclean -P
 

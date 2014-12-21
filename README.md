@@ -28,12 +28,12 @@ The `Opus.Encoders.Encoder_Data` and `Opus.Decoders.Decoder_Data` are not design
 Installation
 ------------
 
-To compile the sources, run `make`. Currently only `make test` and `make run_unit_tests` work.
+Run `make` to build the library. To compile and run the unit tests, run `make test` and then `make run_unit_tests`.
 
 TODO
 ----
 
-* Fix `make` and add `make install`
+* Add `make install`
 * Write some tests for Opus.Encoder.Encode and Opus.Decoder.Decode
 * Bind `opus_decode_float` and `opus_encode_float`
 * Bind `opus_decoder_get_nb_samples` and `opus_pcm_soft_clip`
