@@ -2,7 +2,7 @@ name = "opus_ada"
 description = "Ada 2012 bindings for the Opus audio codec"
 version = "1.0.0"
 website = "https://github.com/onox/opus-ada"
-licenses = "Apache-2.0"
+licenses = "Apache-2.0 AND BSD-2-Clause"
 tags = ["opus", "audio", "sound", "speech", "music"]
 
 authors = ["onox"]
