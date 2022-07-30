@@ -1,27 +1,21 @@
-GNATMAKE=gnatmake -gnatv -p -P
+.PHONY: build clean tests coverage
 
-GNATCLEAN=gnatclean -P
+build:
+	alr build --validation
 
-build_src:
-	$(GNATMAKE) opus_ada_lib.gpr -Xbuild=release
+clean:
+	alr clean
+	cd tests && alr clean
+	rm -rf build tests/build tests/build/cov tests/TEST-*.xml
 
-build_src_debug:
-	$(GNATMAKE) opus_ada_lib.gpr -Xbuild=debug
+tests:
+	cd tests && alr build --development
+	cd tests && alr run -s
 
-clean_src:
-	$(GNATCLEAN) opus_ada_lib.gpr
-
-build_unit_tests:
-	$(GNATMAKE) test/unit/unit_tests.gpr
-
-clean_unit_tests:
-	$(GNATCLEAN) test/unit/unit_tests.gpr
-
-run_unit_tests:
-	./test/unit/test_bindings
-
-build: build_src
-
-test: build_unit_tests
-
-clean: clean_src clean_unit_tests
+coverage:
+	mkdir -p tests/build/cov
+	lcov -q -c -d build/obj -d tests/build/obj -o tests/build/cov/unit.info
+	lcov -q -r tests/build/cov/unit.info */adainclude/* -o tests/build/cov/unit.info
+	lcov -q -r tests/build/cov/unit.info */tests/* -o tests/build/cov/unit.info
+	genhtml -q --ignore-errors source -o tests/build/cov/html tests/build/cov/unit.info
+	lcov -l tests/build/cov/unit.info
