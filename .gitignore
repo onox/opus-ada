@@ -1,4 +1,3 @@
-/build/
-/lib/
-/test/unit/build/
-/test/unit/test_bindings
+build/
+alire/
+config/
