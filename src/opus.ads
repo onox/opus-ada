@@ -128,6 +128,6 @@ private
       Super_Wide_Band =>  1104,
       Full_Band       =>  1105);
 
-   procedure Check_Error (Error : in Interfaces.C.int);
+   procedure Check_Error (Error : Interfaces.C.int);
 
 end Opus;

@@ -16,46 +16,23 @@
 
 package body Opus.Decoders is
 
-   type Get_Request_Type is
-     (Get_Bandwidth_Request,
-      Get_Sample_Rate_Request,
-      Get_Final_Range_Request,
-      Get_Pitch_Request,
-      Get_Last_Packet_Duration_Request,
-      Get_Gain_Request)
-   with
-      Convention => C;
-
-   for Get_Request_Type use
-     (Get_Bandwidth_Request            => 4009,
-      Get_Sample_Rate_Request          => 4029,
-      Get_Final_Range_Request          => 4031,
-      Get_Pitch_Request                => 4033,
-      Get_Last_Packet_Duration_Request => 4039,
-      Get_Gain_Request                 => 4045);
-
-   type Set_Request_Type is
-     (Set_Gain_Request)
-   with
-      Convention => C;
-
-   for Set_Request_Type use
-     (Set_Gain_Request                 => 4034);
+   subtype Opus_Decoder is Opus.API.Opus_Decoder;
+   use all type Opus.API.Get_Request_Type_Decoder;
+   use all type Opus.API.Set_Request_Type_Decoder;
 
    generic
-      Request : Get_Request_Type;
+      Request : Opus.API.Get_Request_Type_Decoder;
       type Return_Type is (<>);
-   function Get_Request (Decoder : in Decoder_Data) return Return_Type;
+   function Get_Request (Decoder : Decoder_Data) return Return_Type;
 
-   function Get_Request (Decoder : in Decoder_Data) return Return_Type is
+   function Get_Request (Decoder : Decoder_Data) return Return_Type is
       Result : Return_Type;
 
       function Opus_Decoder_Ctl
-        (State   : in  Opus_Decoder;
-         Request : in  Get_Request_Type;
+        (State   : Opus_Decoder;
+         Request : Opus.API.Get_Request_Type_Decoder;
          Result  : out Return_Type) return Interfaces.C.int
-      with
-         Import, Convention => C, External_Name => "opus_decoder_ctl";
+      with Import, Convention => C, External_Name => "opus_decoder_ctl";
 
       Error : constant Interfaces.C.int := Opus_Decoder_Ctl (Decoder.Decoder, Request, Result);
    begin
@@ -67,17 +44,16 @@ package body Opus.Decoders is
    end Get_Request;
 
    generic
-      Request : Set_Request_Type;
+      Request : Opus.API.Set_Request_Type_Decoder;
       type Argument_Type is (<>);
-   procedure Set_Request (Decoder : in Decoder_Data; Argument : in Argument_Type);
+   procedure Set_Request (Decoder : Decoder_Data; Argument : Argument_Type);
 
-   procedure Set_Request (Decoder : in Decoder_Data; Argument : in Argument_Type) is
+   procedure Set_Request (Decoder : Decoder_Data; Argument : Argument_Type) is
       function Opus_Decoder_Ctl
-        (State    : in Opus_Decoder;
-         Request  : in Set_Request_Type;
-         Argument : in Argument_Type) return Interfaces.C.int
-      with
-         Import, Convention => C, External_Name => "opus_decoder_ctl";
+        (State    : Opus_Decoder;
+         Request  : Opus.API.Set_Request_Type_Decoder;
+         Argument : Argument_Type) return Interfaces.C.int
+      with Import, Convention => C, External_Name => "opus_decoder_ctl";
 
       Error : constant Interfaces.C.int := Opus_Decoder_Ctl (Decoder.Decoder, Request, Argument);
    begin
@@ -87,48 +63,30 @@ package body Opus.Decoders is
    ----------------------------------------------------------------------------
 
    function Create
-     (Frequency : in Sampling_Rate;
-      Channels  : in Channel_Type) return Decoder_Data
+     (Frequency : Sampling_Rate;
+      Channels  : Channel_Type) return Decoder_Data
    is
-      function Opus_Decoder_Create
-        (Frequency : in  Sampling_Rate;
-         Channels  : in  Channel_Type;
-         Error     : out Interfaces.C.int) return Opus_Decoder
-      with
-         Import, Convention => C, External_Name => "opus_decoder_create";
-
       Error   : Interfaces.C.int;
       Decoder : Decoder_Data;
    begin
-      Decoder.Decoder  := Opus_Decoder_Create (Frequency, Channels, Error);
+      Decoder.Decoder  := Opus.API.Decoder_Create (Frequency, Channels, Error);
       Decoder.Channels := Channels;
 
       Check_Error (Error);
       return Decoder;
    end Create;
 
-   procedure Destroy (Decoder : in Decoder_Data) is
-      procedure Opus_Decoder_Destroy (Decoder : in Opus_Decoder)
-         with Import, Convention => C, External_Name => "opus_decoder_destroy";
+   procedure Destroy (Decoder : Decoder_Data) is
    begin
-      Opus_Decoder_Destroy (Decoder.Decoder);
+      Opus.API.Decoder_Destroy (Decoder.Decoder);
    end Destroy;
 
    function Decode
-     (Decoder    : in Decoder_Data;
-      Data       : in Byte_Array;
-      Max_Samples_Per_Channel : in Positive;
-      Decode_FEC : in Boolean) return PCM_Buffer
+     (Decoder    : Decoder_Data;
+      Data       : Byte_Array;
+      Max_Samples_Per_Channel : Positive;
+      Decode_FEC : Boolean) return PCM_Buffer
    is
-      function Opus_Decode
-        (State     : in Opus_Decoder;
-         Data      : in Byte_Array;
-         Data_Size : in Integer;
-         Audio_Frame : out PCM_Buffer;
-         Samples_Per_Channel : in Integer;
-         Decode_FEC : in C_Boolean) return Interfaces.C.int
-      with Import, Convention => C, External_Name => "opus_decode";
-
       Length_Audio : Interfaces.C.int;
 
       Channels : constant Integer := (if Get_Channels (Decoder) = Mono then 1 else 2);
@@ -136,7 +94,7 @@ package body Opus.Decoders is
    begin
       --  TODO if Data = null or Decode_Fec then assert Max_Samples = multiple of 2.5 ms
 
-      Length_Audio := Opus_Decode
+      Length_Audio := Opus.API.Decode
          (Decoder.Decoder, Data, Data'Length,
           Result, Max_Samples_Per_Channel, C_Boolean (Decode_FEC));
 
@@ -145,12 +103,11 @@ package body Opus.Decoders is
       --  TODO Assuming docs mean samples per channel
    end Decode;
 
-   procedure Reset_State (Decoder : in Decoder_Data) is
+   procedure Reset_State (Decoder : Decoder_Data) is
       function Opus_Decoder_Ctl
-        (State   : in Opus_Decoder;
-         Request : in Interfaces.C.int) return Interfaces.C.int
-      with
-         Import, Convention => C, External_Name => "opus_decoder_ctl";
+        (State   : Opus_Decoder;
+         Request : Interfaces.C.int) return Interfaces.C.int
+      with Import, Convention => C, External_Name => "opus_decoder_ctl";
 
       Reset_State_Request : constant := 4028;
       Error : constant Interfaces.C.int := Opus_Decoder_Ctl (Decoder.Decoder, Reset_State_Request);
@@ -160,51 +117,53 @@ package body Opus.Decoders is
 
    ----------------------------------------------------------------------------
 
-   function Get_Bandwidth (Decoder : in Decoder_Data) return Bandwidth is
-      function Internal_Get_Bandwidth is new Get_Request (Get_Bandwidth_Request, Bandwidth);
+   package Internal is
+      function Get_Bandwidth   is new Get_Request (Get_Bandwidth_Request, Bandwidth);
+      function Get_Gain        is new Get_Request (Get_Gain_Request, Q8_dB);
+      function Get_Pitch       is new Get_Request (Get_Pitch_Request, Interfaces.C.int);
+      function Get_Sample_Rate is new Get_Request (Get_Final_Range_Request, Interfaces.C.int);
+      function Get_Sample_Rate is new Get_Request (Get_Sample_Rate_Request, Sampling_Rate);
+
+      function Get_Last_Packet_Duration is
+        new Get_Request (Get_Last_Packet_Duration_Request, Interfaces.C.int);
+
+      procedure Set_Gain is new Set_Request (Set_Gain_Request, Q8_dB);
+   end Internal;
+
+   ----------------------------------------------------------------------------
+
+   function Get_Bandwidth (Decoder : Decoder_Data) return Bandwidth is
    begin
-      return Internal_Get_Bandwidth (Decoder);
+      return Internal.Get_Bandwidth (Decoder);
    exception
       when Invalid_Result =>
          raise No_Packets_Decoded;
    end Get_Bandwidth;
 
-   function Get_Channels (Decoder : in Decoder_Data) return Channel_Type is
-   begin
-      return Decoder.Channels;
-   end Get_Channels;
+   function Get_Channels (Decoder : Decoder_Data) return Channel_Type is (Decoder.Channels);
 
-   procedure Internal_Set_Gain is new Set_Request (Set_Gain_Request, Q8_dB);
    procedure Set_Gain
-     (Decoder : in Decoder_Data;
-      Factor  : in Q8_dB) renames Internal_Set_Gain;
+     (Decoder : Decoder_Data;
+      Factor  : Q8_dB) renames Internal.Set_Gain;
 
-   function Internal_Get_Gain is new Get_Request (Get_Gain_Request, Q8_dB);
-   function Get_Gain (Decoder : in Decoder_Data) return Q8_dB
-      renames Internal_Get_Gain;
+   function Get_Gain (Decoder : Decoder_Data) return Q8_dB renames Internal.Get_Gain;
 
-   function Get_Pitch (Decoder : in Decoder_Data) return Integer is
-      function Internal_Get_Pitch is new Get_Request (Get_Pitch_Request, Interfaces.C.int);
+   function Get_Pitch (Decoder : Decoder_Data) return Integer is
    begin
-      return Integer (Internal_Get_Pitch (Decoder));
+      return Integer (Internal.Get_Pitch (Decoder));
    end Get_Pitch;
 
-   function Get_Final_Range (Decoder : in Decoder_Data) return Integer is
-      function Internal_Get_Sample_Rate is
-        new Get_Request (Get_Final_Range_Request, Interfaces.C.int);
+   function Get_Final_Range (Decoder : Decoder_Data) return Integer is
    begin
-      return Integer (Internal_Get_Sample_Rate (Decoder));
+      return Integer (Interfaces.C.int'(Internal.Get_Sample_Rate (Decoder)));
    end Get_Final_Range;
 
-   function Internal_Get_Sample_Rate is new Get_Request (Get_Sample_Rate_Request, Sampling_Rate);
-   function Get_Sample_Rate (Decoder : in Decoder_Data) return Sampling_Rate
-      renames Internal_Get_Sample_Rate;
+   function Get_Sample_Rate (Decoder : Decoder_Data) return Sampling_Rate
+     renames Internal.Get_Sample_Rate;
 
-   function Get_Last_Packet_Duration (Decoder : in Decoder_Data) return Natural is
-      function Internal_Get_Last_Packet_Duration is
-        new Get_Request (Get_Last_Packet_Duration_Request, Interfaces.C.int);
+   function Get_Last_Packet_Duration (Decoder : Decoder_Data) return Natural is
    begin
-      return Natural (Internal_Get_Last_Packet_Duration (Decoder));
+      return Natural (Internal.Get_Last_Packet_Duration (Decoder));
    end Get_Last_Packet_Duration;
 
 end Opus.Decoders;

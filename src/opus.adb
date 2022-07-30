@@ -16,16 +16,16 @@
 
 with Interfaces.C.Strings;
 
+with Opus.API;
+
 package body Opus is
 
    function Get_Version return String is
-      function Opus_Get_Version_String return Interfaces.C.Strings.chars_ptr
-         with Import, Convention => C, External_Name => "opus_get_version_string";
    begin
-      return Interfaces.C.Strings.Value (Opus_Get_Version_String);
+      return Interfaces.C.Strings.Value (Opus.API.Get_Version_String);
    end Get_Version;
 
-   procedure Check_Error (Error : in Interfaces.C.int) is
+   procedure Check_Error (Error : Interfaces.C.int) is
    begin
       case Error is
          when -1 => raise Bad_Argument;

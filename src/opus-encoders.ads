@@ -19,7 +19,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 
-private with System;
+private with Opus.API;
 
 package Opus.Encoders is
    pragma Preelaborate;
@@ -66,9 +66,9 @@ package Opus.Encoders is
    subtype Bandpass is Bandwidth range Narrow_Band .. Full_Band;
 
    function Create
-     (Frequency   : in Sampling_Rate;
-      Channels    : in Channel_Type;
-      Application : in Application_Type) return Encoder_Data;
+     (Frequency   : Sampling_Rate;
+      Channels    : Channel_Type;
+      Application : Application_Type) return Encoder_Data;
    --  Create and return an Opus encoder.
    --
    --  Regardless of the sampling rate and number channels selected, the
@@ -77,12 +77,12 @@ package Opus.Encoders is
    --  it is safe to always use 48 kHz stereo input and let the encoder
    --  optimize the encoding.
 
-   procedure Destroy (Encoder : in Encoder_Data);
+   procedure Destroy (Encoder : Encoder_Data);
 
    function Encode
-     (Encoder        : in Encoder_Data;
-      Audio_Frame    : in PCM_Buffer;
-      Max_Data_Bytes : in Positive) return Byte_Array;
+     (Encoder        : Encoder_Data;
+      Audio_Frame    : PCM_Buffer;
+      Max_Data_Bytes : Positive) return Byte_Array;
    --  Encode exactly one frame (2.5, 5, 10, 20, 40, or 60 ms) of audio data.
    --  Returns the length of the encoded packet (in bytes) on success.
    --
@@ -92,15 +92,15 @@ package Opus.Encoders is
    --  the packet (4000 bytes is recommended). Do not use it to control
    --  VBR target bitrate, instead use Set_Bitrate.
 
-   procedure Reset_State (Encoder : in Encoder_Data);
+   procedure Reset_State (Encoder : Encoder_Data);
    --  Resets the codec state to be equivalent to a freshly initialized
    --  state. This should be called when switching streams in order to
    --  prevent the back to back decoding from giving different results
    --  from one at a time decoding.
 
    procedure Set_Application
-     (Encoder     : in Encoder_Data;
-      Application : in Application_Type);
+     (Encoder     : Encoder_Data;
+      Application : Application_Type);
    --  Set the encoder's intended application. The initial value
    --  is a mandatory argument to the Create function.
    --
@@ -117,18 +117,18 @@ package Opus.Encoders is
    --     voice-optimized mode of operation. To be used when
    --     lowest-achievable latency is what matters most.
 
-   function Get_Application (Encoder : in Encoder_Data) return Application_Type;
+   function Get_Application (Encoder : Encoder_Data) return Application_Type;
    --  Return the encoder's configured application
 
    procedure Set_Bitrate
-     (Encoder : in Encoder_Data;
-      Rate    : in Bitrate)
+     (Encoder : Encoder_Data;
+      Rate    : Bitrate)
    with
       Pre => (if Get_Channels (Encoder) = Mono then
                  Rate <= Maximum_Mono_Bitrate);
    --  Set bitrate in bits per second (b/s)
 
-   function Get_Bitrate (Encoder : in Encoder_Data) return Bitrate;
+   function Get_Bitrate (Encoder : Encoder_Data) return Bitrate;
    --  Return the encoder's bitrate in bits per second (b/s). If the
    --  result is invalid, the bitrate has been set to Maximum.
    --
@@ -136,13 +136,13 @@ package Opus.Encoders is
    --  input sampling rate.
 
    procedure Set_Bitrate
-     (Encoder : in Encoder_Data;
-      Rate    : in Bitrate_Type);
+     (Encoder : Encoder_Data;
+      Rate    : Bitrate_Type);
    --  Set bitrate to automatic or the maximum bitrate
 
    procedure Set_Bandwidth
-     (Encoder : in Encoder_Data;
-      Width   : in Bandwidth);
+     (Encoder : Encoder_Data;
+      Width   : Bandwidth);
    --  Set the encoder's bandpass to a specific value or configure the
    --  encoder to automatically (default) select the bandpass based on
    --  the available bitrate.
@@ -154,12 +154,12 @@ package Opus.Encoders is
    --  to reduce the bandpass when the bitrate becomes too low, for better
    --  overall quality.
 
-   function Get_Bandwidth (Encoder : in Encoder_Data) return Bandwidth;
+   function Get_Bandwidth (Encoder : Encoder_Data) return Bandwidth;
    --  Return the encoder's configured bandpass
 
    procedure Set_Max_Bandwidth
-     (Encoder : in Encoder_Data;
-      Width   : in Bandpass);
+     (Encoder : Encoder_Data;
+      Width   : Bandpass);
    --  Set the maximum bandpass that the encoder will select automatically.
    --  The default is Full_Band.
    --
@@ -169,34 +169,34 @@ package Opus.Encoders is
    --  providing, but still gives the encoder the freedom to reduce the bandpass
    --  when the bitrate becomes too low, for better overall quality.
 
-   function Get_Max_Bandwidth (Encoder : in Encoder_Data) return Bandpass;
+   function Get_Max_Bandwidth (Encoder : Encoder_Data) return Bandpass;
    --  Return the encoder's configured maximum allowed bandpass
 
-   function Get_Channels (Encoder : in Encoder_Data) return Channel_Type;
+   function Get_Channels (Encoder : Encoder_Data) return Channel_Type;
    --  Return the number of channels that the encoder uses. The returned
    --  value is a mandatory argument to the Create function.
 
    procedure Set_Complexity
-     (Encoder : in Encoder_Data;
-      Scale   : in Complexity);
+     (Encoder : Encoder_Data;
+      Scale   : Complexity);
    --  Set the encoder's computational complexity
 
-   function Get_Complexity (Encoder : in Encoder_Data) return Complexity;
+   function Get_Complexity (Encoder : Encoder_Data) return Complexity;
    --  Return the encoder's complexity
 
    procedure Set_DTX
-     (Encoder : in Encoder_Data;
-      Enable  : in Boolean);
+     (Encoder : Encoder_Data;
+      Enable  : Boolean);
    --  Enable or disable (default) the encoder's use of discontinuous
    --  transmission (DTX).
    --  Note: This is only applicable to the LPC layer.
 
-   function Get_DTX (Encoder : in Encoder_Data) return Boolean;
+   function Get_DTX (Encoder : Encoder_Data) return Boolean;
    --  Return the encoder's configured use of discontinuous transmission
 
    procedure Set_Force_Channels
-     (Encoder  : in Encoder_Data;
-      Channels : in Force_Channels);
+     (Encoder  : Encoder_Data;
+      Channels : Force_Channels);
    --  Force mono or stereo in the encoder.
    --
    --  This can force the encoder to produce packets encoded as either
@@ -204,51 +204,51 @@ package Opus.Encoders is
    --  is useful when the caller knows that the input signal is currently
    --  a mono source embedded in a stereo stream.
 
-   function Get_Force_Channels (Encoder : in Encoder_Data) return Force_Channels;
+   function Get_Force_Channels (Encoder : Encoder_Data) return Force_Channels;
    --  Return the encoder's forced channel configuration
 
    procedure Set_Inband_FEC
-     (Encoder : in Encoder_Data;
-      Enable  : in Boolean);
+     (Encoder : Encoder_Data;
+      Enable  : Boolean);
    --  Enable or disable (default) the encoder's use of inband forward
    --  error correction (FEC).
    --  Note: This is only applicable to the LPC layer.
 
-   function Get_Inband_FEC (Encoder : in Encoder_Data) return Boolean;
+   function Get_Inband_FEC (Encoder : Encoder_Data) return Boolean;
    --  Return encoder's configured use of inband forward error correction
 
    procedure Set_LSB_Depth
-     (Encoder : in Encoder_Data;
-      Depth   : in Signal_Depth);
+     (Encoder : Encoder_Data;
+      Depth   : Signal_Depth);
    --  Set the depth (default is 24 bits) of signal being encoded. This
    --  is a hint which helps the encoder identify silence and near-silence.
 
-   function Get_LSB_Depth (Encoder : in Encoder_Data) return Signal_Depth;
+   function Get_LSB_Depth (Encoder : Encoder_Data) return Signal_Depth;
    --  Return the encoder's configured signal depth
 
    procedure Set_Packet_Loss
-     (Encoder       : in Encoder_Data;
-      Expected_Loss : in Percentage);
+     (Encoder       : Encoder_Data;
+      Expected_Loss : Percentage);
    --  Set the encoder's expected packet loss percentage. Higher values
    --  will trigger progressively more loss resistant behavior in the
    --  encoder at the expense of quality at a given bitrate in the
    --  lossless case, but greater quality under loss.
 
-   function Get_Packet_Loss (Encoder : in Encoder_Data) return Percentage;
+   function Get_Packet_Loss (Encoder : Encoder_Data) return Percentage;
    --  Return the encoder's configured packet loss percentage
 
    procedure Set_Prediction_Disabled
-     (Encoder : in Encoder_Data;
-      Disable : in Boolean);
+     (Encoder : Encoder_Data;
+      Disable : Boolean);
    --  Disable or enable (default) almost all use of prediction, making
    --  frames almost completely independent. This reduces quality.
 
-   function Get_Prediction_Disabled (Encoder : in Encoder_Data) return Boolean;
+   function Get_Prediction_Disabled (Encoder : Encoder_Data) return Boolean;
    --  Return the encoder's configured prediction status
 
    procedure Set_Signal
-     (Encoder : in Encoder_Data;
-      Hint    : in Signal);
+     (Encoder : Encoder_Data;
+      Hint    : Signal);
    --  Set the type of signal being encoded. This is a hint which
    --  helps the encoder's mode selection.
    --
@@ -257,12 +257,12 @@ package Opus.Encoders is
    --  Music:
    --     Bias thresholds towards choosing MDCT modes.
 
-   function Get_Signal (Encoder : in Encoder_Data) return Signal;
+   function Get_Signal (Encoder : Encoder_Data) return Signal;
    --  Return the encoder's configured signal type
 
    procedure Set_VBR
-     (Encoder : in Encoder_Data;
-      Enable  : in Boolean);
+     (Encoder : Encoder_Data;
+      Enable  : Boolean);
    --  Enable or disable variable bitrate (VBR) in the encoder.
    --
    --  If enabled then VBR (default) is used. The exact type of VBR is
@@ -272,12 +272,12 @@ package Opus.Encoders is
    --  bit-rate, this can cause noticeable quality degradation.
    --  Warning: Only the MDCT mode of Opus can provide hard CBR behavior.
 
-   function Get_VBR (Encoder : in Encoder_Data) return Boolean;
+   function Get_VBR (Encoder : Encoder_Data) return Boolean;
    --  Return whether variable bitrate (VBR) is enabled in the encoder
 
    procedure Set_VBR_Constraint
-     (Encoder   : in Encoder_Data;
-      Constrain : in Boolean);
+     (Encoder   : Encoder_Data;
+      Constrain : Boolean);
    --  Enable or disable constrained VBR in the encoder. This setting is
    --  ignored when the encoder is in CBR mode.
    --
@@ -290,12 +290,12 @@ package Opus.Encoders is
    --  of buffering delay assuming a transport with a serialization speed
    --  of the nominal bitrate.
 
-   function Get_VBR_Constraint (Encoder : in Encoder_Data) return Boolean;
+   function Get_VBR_Constraint (Encoder : Encoder_Data) return Boolean;
    --  Determine if constrained VBR is enabled in the encoder
 
    procedure Set_Expert_Frame_Duration
-     (Encoder  : in Encoder_Data;
-      Duration : in Frame_Duration);
+     (Encoder  : Encoder_Data;
+      Duration : Frame_Duration);
    --  Set the encoder's use of variable duration frames.
    --
    --  When variable duration is enabled, the encoder is free to use a
@@ -313,17 +313,17 @@ package Opus.Encoders is
    --  <duration in ms>:
    --     Use <duration in ms> frames.
 
-   function Get_Expert_Frame_Duration (Encoder : in Encoder_Data) return Frame_Duration;
+   function Get_Expert_Frame_Duration (Encoder : Encoder_Data) return Frame_Duration;
    --  Return the encoder's configured use of variable duration frames
 
-   function Get_Final_Range (Encoder : in Encoder_Data) return Integer;
+   function Get_Final_Range (Encoder : Encoder_Data) return Integer;
    --  Return the final state of the codec's entropy coder.
    --
    --  This is used for testing purposesr. The encoder and decoder state
    --  should be identical after coding a payload (assuming no data
    --  corruption or software bugs)
 
-   function Get_Lookahead (Encoder : in Encoder_Data) return Positive;
+   function Get_Lookahead (Encoder : Encoder_Data) return Positive;
    --  Return the total samples of delay added by the entire codec.
    --
    --  This can be queried by the encoder and then the provided number
@@ -337,16 +337,13 @@ package Opus.Encoders is
    --  initial configuration. Applications needing delay compensation should
    --  call this rather than hard-coding a value.
 
-   function Get_Sample_Rate (Encoder : in Encoder_Data) return Sampling_Rate;
+   function Get_Sample_Rate (Encoder : Encoder_Data) return Sampling_Rate;
    --  Return the sampling rate the encoder was initialized with
 
 private
 
-   type Opus_Encoder is access System.Address
-     with Storage_Size => 0;
-
    type Encoder_Data is record
-      Encoder  : Opus_Encoder;
+      Encoder  : Opus.API.Opus_Encoder;
       Channels : Channel_Type;
    end record;
 
