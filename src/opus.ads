@@ -22,6 +22,7 @@
 with Interfaces.C;
 
 package Opus is
+   pragma Preelaborate;
 
    --  The Opus codec is designed for interactive speech and audio
    --  transmission over the Internet. It is designed by the IETF Codec

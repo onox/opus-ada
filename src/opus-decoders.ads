@@ -19,9 +19,10 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 
-with Interfaces.C.Extensions;
+private with System;
 
 package Opus.Decoders is
+   pragma Preelaborate;
 
    type Decoder_Data is private;
    --  A single codec state may only be accessed from a single thread at
@@ -105,7 +106,8 @@ package Opus.Decoders is
 
 private
 
-   subtype Opus_Decoder is Interfaces.C.Extensions.opaque_structure_def_ptr;
+   type Opus_Decoder is access System.Address
+     with Storage_Size => 0;
 
    type Decoder_Data is record
       Decoder  : Opus_Decoder;

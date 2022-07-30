@@ -187,8 +187,10 @@ package body Opus.Encoders is
 
       Length_Data : Interfaces.C.int;
 
-      Channels            : constant Integer          := (if Get_Channels (Encoder) = Mono then 1 else 2);
-      Samples_Per_Channel : constant Interfaces.C.int := Interfaces.C.int (Audio_Frame'Length / Channels);
+      Channels            : constant Integer :=
+        (if Get_Channels (Encoder) = Mono then 1 else 2);
+      Samples_Per_Channel : constant Interfaces.C.int :=
+        Interfaces.C.int (Audio_Frame'Length / Channels);
    begin
       --  TODO Assert PCM_Buffer'First = 1 and PCM_Buffer'Last >= 20
 
@@ -199,7 +201,8 @@ package body Opus.Encoders is
       --  Frame_Size_In_Milliseconds : constant := Samples_Per_Channel / Samples_Per_Millisecond;
       --  TODO Assert Frame_Size_In_Milliseconds = 2.5 | 5 | 10 | 20 | 40 | 60
 
-      Length_Data := Opus_Encode (Encoder.Encoder, Audio_Frame, Samples_Per_Channel, Result, Result'Length);
+      Length_Data := Opus_Encode
+        (Encoder.Encoder, Audio_Frame, Samples_Per_Channel, Result, Result'Length);
 
       Check_Error (Length_Data);
       return Result (0 .. Integer (Length_Data));
@@ -220,12 +223,14 @@ package body Opus.Encoders is
 
    ----------------------------------------------------------------------------
 
-   procedure Internal_Set_Application is new Set_Request (Set_Application_Request, Application_Type);
+   procedure Internal_Set_Application is
+     new Set_Request (Set_Application_Request, Application_Type);
    procedure Set_Application
      (Encoder     : in Encoder_Data;
       Application : in Application_Type) renames Internal_Set_Application;
 
-   function Internal_Get_Application is new Get_Request (Get_Application_Request, Application_Type);
+   function Internal_Get_Application is
+     new Get_Request (Get_Application_Request, Application_Type);
    function Get_Application (Encoder : in Encoder_Data) return Application_Type
       renames Internal_Get_Application;
 
@@ -290,12 +295,14 @@ package body Opus.Encoders is
       return Boolean (Internal_Get_DTX (Encoder));
    end Get_DTX;
 
-   procedure Internal_Set_Force_Channels is new Set_Request (Set_Force_Channels_Request, Force_Channels);
+   procedure Internal_Set_Force_Channels is
+     new Set_Request (Set_Force_Channels_Request, Force_Channels);
    procedure Set_Force_Channels
      (Encoder  : in Encoder_Data;
       Channels : in Force_Channels) renames Internal_Set_Force_Channels;
 
-   function Internal_Get_Force_Channels is new Get_Request (Get_Force_Channels_Request, Force_Channels);
+   function Internal_Get_Force_Channels is
+     new Get_Request (Get_Force_Channels_Request, Force_Channels);
    function Get_Force_Channels (Encoder : in Encoder_Data) return Force_Channels
       renames Internal_Get_Force_Channels;
 
@@ -336,13 +343,15 @@ package body Opus.Encoders is
      (Encoder : in Encoder_Data;
       Disable : in Boolean)
    is
-      procedure Internal_Set_Prediction_Disabled is new Set_Request (Set_Prediction_Disabled_Request, C_Boolean);
+      procedure Internal_Set_Prediction_Disabled is
+        new Set_Request (Set_Prediction_Disabled_Request, C_Boolean);
    begin
       Internal_Set_Prediction_Disabled (Encoder, C_Boolean (Disable));
    end Set_Prediction_Disabled;
 
    function Get_Prediction_Disabled (Encoder : in Encoder_Data) return Boolean is
-      function Internal_Get_Prediction_Disabled is new Get_Request (Get_Prediction_Disabled_Request, C_Boolean);
+      function Internal_Get_Prediction_Disabled is
+        new Get_Request (Get_Prediction_Disabled_Request, C_Boolean);
    begin
       return Boolean (Internal_Get_Prediction_Disabled (Encoder));
    end Get_Prediction_Disabled;
@@ -375,28 +384,33 @@ package body Opus.Encoders is
      (Encoder   : in Encoder_Data;
       Constrain : in Boolean)
    is
-      procedure Internal_Set_VBR_Constraint is new Set_Request (Set_VBR_Constraint_Request, C_Boolean);
+      procedure Internal_Set_VBR_Constraint is
+        new Set_Request (Set_VBR_Constraint_Request, C_Boolean);
    begin
       Internal_Set_VBR_Constraint (Encoder, C_Boolean (Constrain));
    end Set_VBR_Constraint;
 
    function Get_VBR_Constraint (Encoder : in Encoder_Data) return Boolean is
-      function Internal_Get_VBR_Constraint is new Get_Request (Get_VBR_Constraint_Request, C_Boolean);
+      function Internal_Get_VBR_Constraint is
+        new Get_Request (Get_VBR_Constraint_Request, C_Boolean);
    begin
       return Boolean (Internal_Get_VBR_Constraint (Encoder));
    end Get_VBR_Constraint;
 
-   procedure Internal_Set_Expert_Frame_Duration is new Set_Request (Set_Expert_Frame_Duration_Request, Frame_Duration);
+   procedure Internal_Set_Expert_Frame_Duration is
+     new Set_Request (Set_Expert_Frame_Duration_Request, Frame_Duration);
    procedure Set_Expert_Frame_Duration
      (Encoder  : in Encoder_Data;
       Duration : in Frame_Duration) renames Internal_Set_Expert_Frame_Duration;
 
-   function Internal_Get_Expert_Frame_Duration is new Get_Request (Get_Expert_Frame_Duration_Request, Frame_Duration);
+   function Internal_Get_Expert_Frame_Duration is
+     new Get_Request (Get_Expert_Frame_Duration_Request, Frame_Duration);
    function Get_Expert_Frame_Duration (Encoder : in Encoder_Data) return Frame_Duration
       renames Internal_Get_Expert_Frame_Duration;
 
    function Get_Final_Range (Encoder : in Encoder_Data) return Integer is
-      function Internal_Get_Final_Range is new Get_Request (Get_Final_Range_Request, Interfaces.C.int);
+      function Internal_Get_Final_Range is
+        new Get_Request (Get_Final_Range_Request, Interfaces.C.int);
    begin
       return Integer (Internal_Get_Final_Range (Encoder));
    end Get_Final_Range;

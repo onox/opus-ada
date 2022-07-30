@@ -19,9 +19,10 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 
-with Interfaces.C.Extensions;
+private with System;
 
 package Opus.Encoders is
+   pragma Preelaborate;
 
    type Encoder_Data is private;
 
@@ -341,7 +342,8 @@ package Opus.Encoders is
 
 private
 
-   subtype Opus_Encoder is Interfaces.C.Extensions.opaque_structure_def_ptr;
+   type Opus_Encoder is access System.Address
+     with Storage_Size => 0;
 
    type Encoder_Data is record
       Encoder  : Opus_Encoder;

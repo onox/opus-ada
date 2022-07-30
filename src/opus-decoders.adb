@@ -136,10 +136,13 @@ package body Opus.Decoders is
    begin
       --  TODO if Data = null or Decode_Fec then assert Max_Samples = multiple of 2.5 ms
 
-      Length_Audio := Opus_Decode (Decoder.Decoder, Data, Data'Length, Result, Max_Samples_Per_Channel, C_Boolean (Decode_FEC));
+      Length_Audio := Opus_Decode
+         (Decoder.Decoder, Data, Data'Length,
+          Result, Max_Samples_Per_Channel, C_Boolean (Decode_FEC));
 
       Check_Error (Length_Audio);
-      return Result (0 .. Integer (Length_Audio) * Channels);  -- TODO Assuming docs mean samples per channel
+      return Result (0 .. Integer (Length_Audio) * Channels);
+      --  TODO Assuming docs mean samples per channel
    end Decode;
 
    procedure Reset_State (Decoder : in Decoder_Data) is
@@ -187,7 +190,8 @@ package body Opus.Decoders is
    end Get_Pitch;
 
    function Get_Final_Range (Decoder : in Decoder_Data) return Integer is
-      function Internal_Get_Sample_Rate is new Get_Request (Get_Final_Range_Request, Interfaces.C.int);
+      function Internal_Get_Sample_Rate is
+        new Get_Request (Get_Final_Range_Request, Interfaces.C.int);
    begin
       return Integer (Internal_Get_Sample_Rate (Decoder));
    end Get_Final_Range;
@@ -197,7 +201,8 @@ package body Opus.Decoders is
       renames Internal_Get_Sample_Rate;
 
    function Get_Last_Packet_Duration (Decoder : in Decoder_Data) return Natural is
-      function Internal_Get_Last_Packet_Duration is new Get_Request (Get_Last_Packet_Duration_Request, Interfaces.C.int);
+      function Internal_Get_Last_Packet_Duration is
+        new Get_Request (Get_Last_Packet_Duration_Request, Interfaces.C.int);
    begin
       return Natural (Internal_Get_Last_Packet_Duration (Decoder));
    end Get_Last_Packet_Duration;
