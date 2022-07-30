@@ -1,27 +1,28 @@
---  Copyright (c) 2014 onox <denkpadje@gmail.com>
---
---  Permission to use, copy, modify, and/or distribute this software for any
---  purpose with or without fee is hereby granted, provided that the above
---  copyright notice and this permission notice appear in all copies.
---
---  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
---  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
---  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
---  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
---  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
---  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
---  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+with "config/opus_ada_config";
 
-library project Opus_Ada is
+project Opus_Ada is
 
-   for Languages use ("Ada");
+   for Library_Name use "opus-ada";
+   for Library_Version use Project'Library_Name & ".so." & Opus_Ada_Config.Crate_Version;
 
-   for Source_Files use ("../../include/opus_ada");
+   for Create_Missing_Dirs use "True";
 
-   for Library_Name use "opus_ada";
-   for Library_Dir  use "../../lib/opus_ada";
-   for Library_Kind use "relocatable";
+   for Source_Dirs use ("src/");
+   for Object_Dir use "build/obj/" & Opus_Ada_Config.Build_Profile;
+   for Library_Dir use "build/lib";
 
-   for Externally_Built use "true";
+   type Library_Type_Type is ("relocatable", "static", "static-pic");
+   Library_Type : Library_Type_Type :=
+     external ("OPUS_ADA_LIBRARY_TYPE", external ("LIBRARY_TYPE", "static"));
+   for Library_Kind use Library_Type;
+
+   package Compiler is
+      for Default_Switches ("Ada") use Opus_Ada_Config.Ada_Compiler_Switches & ("-gnatyM99");
+      for Local_Configuration_Pragmas use "gnat.adc";
+   end Compiler;
+
+   package Binder is
+      for Switches ("Ada") use ("-Es"); --  Symbolic traceback
+   end Binder;
 
 end Opus_Ada;

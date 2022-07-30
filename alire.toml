@@ -1,0 +1,17 @@
+name = "opus_ada"
+description = "Ada 2012 bindings for the Opus audio codec"
+version = "1.0.0"
+website = "https://github.com/onox/opus-ada"
+licenses = "Apache-2.0"
+tags = ["opus", "audio", "sound", "speech", "music"]
+
+authors = ["onox"]
+maintainers = ["onox <denkpadje@gmail.com>"]
+maintainers-logins = ["onox"]
+
+[[depends-on]]
+libopus = "^1.3.1"
+
+[build-switches]
+validation.compile_checks = "warnings"
+"*".style_checks = ["-gnatygAO-Is"]
