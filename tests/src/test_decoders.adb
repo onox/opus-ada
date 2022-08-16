@@ -67,10 +67,9 @@ package body Test_Decoders is
       Assert (Get_Last_Packet_Duration (Decoder) = 0, Unexpected_Configuration_Message);
 
       declare
-         Result : Bandwidth
-            with Unreferenced;
+         Unused_Result : Bandwidth;
       begin
-         Result := Get_Bandwidth (Decoder);
+         Unused_Result := Get_Bandwidth (Decoder);
          Fail (Expected_No_Packets_Decoded_Message);
       exception
          when No_Packets_Decoded =>
