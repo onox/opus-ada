@@ -33,7 +33,7 @@ package body Test_Opus is
    procedure Test_Version is
       Version : constant String := Get_Version;
    begin
-      Assert (Version = "libopus 1.1", Unexpected_Version_Message);
+      Assert (Version'Length > 7 and then Version (1 .. 7) = "libopus", Unexpected_Version_Message);
    end Test_Version;
 
 end Test_Opus;
