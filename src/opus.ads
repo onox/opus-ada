@@ -101,8 +101,8 @@ package Opus is
 
 private
 
-   type C_Boolean is new Boolean
-      with Convention => C;
+   type C_Boolean is range 0 .. 1
+     with Size => 32;
 
    for Channel_Type use
      (Mono   => 1,

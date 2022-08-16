@@ -221,12 +221,12 @@ package body Opus.Encoders is
      (Encoder : Encoder_Data;
       Enable  : Boolean) is
    begin
-      Internal.Set_DTX (Encoder, C_Boolean (Enable));
+      Internal.Set_DTX (Encoder, (if Enable then 1 else 0));
    end Set_DTX;
 
    function Get_DTX (Encoder : Encoder_Data) return Boolean is
    begin
-      return Boolean (Internal.Get_DTX (Encoder));
+      return Internal.Get_DTX (Encoder) = 1;
    end Get_DTX;
 
    procedure Set_Force_Channels
@@ -240,12 +240,12 @@ package body Opus.Encoders is
      (Encoder : Encoder_Data;
       Enable  : Boolean) is
    begin
-      Internal.Set_Inband_FEC (Encoder, C_Boolean (Enable));
+      Internal.Set_Inband_FEC (Encoder, (if Enable then 1 else 0));
    end Set_Inband_FEC;
 
    function Get_Inband_FEC (Encoder : Encoder_Data) return Boolean is
    begin
-      return Boolean (Internal.Get_Inband_FEC (Encoder));
+      return Internal.Get_Inband_FEC (Encoder) = 1;
    end Get_Inband_FEC;
 
    procedure Set_LSB_Depth
@@ -266,12 +266,12 @@ package body Opus.Encoders is
      (Encoder : Encoder_Data;
       Disable : Boolean) is
    begin
-      Internal.Set_Prediction_Disabled (Encoder, C_Boolean (Disable));
+      Internal.Set_Prediction_Disabled (Encoder, (if Disable then 1 else 0));
    end Set_Prediction_Disabled;
 
    function Get_Prediction_Disabled (Encoder : Encoder_Data) return Boolean is
    begin
-      return Boolean (Internal.Get_Prediction_Disabled (Encoder));
+      return Internal.Get_Prediction_Disabled (Encoder) = 1;
    end Get_Prediction_Disabled;
 
    procedure Set_Signal
@@ -284,24 +284,24 @@ package body Opus.Encoders is
      (Encoder : Encoder_Data;
       Enable  : Boolean) is
    begin
-      Internal.Set_VBR (Encoder, C_Boolean (Enable));
+      Internal.Set_VBR (Encoder, (if Enable then 1 else 0));
    end Set_VBR;
 
    function Get_VBR (Encoder : Encoder_Data) return Boolean is
    begin
-      return Boolean (Internal.Get_VBR (Encoder));
+      return Internal.Get_VBR (Encoder) = 1;
    end Get_VBR;
 
    procedure Set_VBR_Constraint
      (Encoder   : Encoder_Data;
       Constrain : Boolean) is
    begin
-      Internal.Set_VBR_Constraint (Encoder, C_Boolean (Constrain));
+      Internal.Set_VBR_Constraint (Encoder, (if Constrain then 1 else 0));
    end Set_VBR_Constraint;
 
    function Get_VBR_Constraint (Encoder : Encoder_Data) return Boolean is
    begin
-      return Boolean (Internal.Get_VBR_Constraint (Encoder));
+      return Internal.Get_VBR_Constraint (Encoder) = 1;
    end Get_VBR_Constraint;
 
    procedure Set_Expert_Frame_Duration

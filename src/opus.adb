@@ -28,6 +28,7 @@ package body Opus is
    procedure Check_Error (Error : Interfaces.C.int) is
    begin
       case Error is
+         when  0 => null;
          when -1 => raise Bad_Argument;
          when -2 => raise Buffer_Too_Small;
          when -3 => raise Internal_Error;
@@ -35,7 +36,7 @@ package body Opus is
          when -5 => raise Unimplemented;
          when -6 => raise Invalid_State;
          when -7 => raise Allocation_Fail;
-         when others => null;
+         when others => raise Program_Error;
       end case;
    end Check_Error;
 

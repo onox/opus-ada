@@ -96,7 +96,7 @@ package body Opus.Decoders is
 
       Length_Audio := Opus.API.Decode
          (Decoder.Decoder, Data, Data'Length,
-          Result, Max_Samples_Per_Channel, C_Boolean (Decode_FEC));
+          Result, Max_Samples_Per_Channel, (if Decode_FEC then 1 else 0));
 
       Check_Error (Length_Audio);
       return Result (0 .. Integer (Length_Audio) * Channels);
