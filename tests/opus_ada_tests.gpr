@@ -14,7 +14,7 @@ project Opus_Ada_Tests is
 
    package Compiler is
       for Default_Switches ("Ada") use Opus_Ada_Tests_Config.Ada_Compiler_Switches &
-        ("-gnatyM99", "--coverage");
+        ("--coverage");
       for Local_Configuration_Pragmas use "gnat.adc";
    end Compiler;
 

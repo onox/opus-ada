@@ -14,4 +14,4 @@ libopus = "^1.3.1"
 
 [build-switches]
 validation.compile_checks = "warnings"
-"*".style_checks = ["-gnatygAO-Is"]
+"*".style_checks = ["-gnatygAOM99-Is"]

@@ -19,4 +19,4 @@ opus_ada = { path = "../" }
 
 [build-switches]
 validation.compile_checks = "warnings"
-"*".style_checks = ["-gnatygAO-Is"]
+"*".style_checks = ["-gnatygAOM99-Is"]
