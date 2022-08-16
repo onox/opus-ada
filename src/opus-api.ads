@@ -20,6 +20,8 @@ with System;
 private package Opus.API is
    pragma Preelaborate;
 
+   pragma Linker_Options ("-lopus");
+
    type Opus_Decoder is access System.Address
      with Storage_Size => 0;
 
