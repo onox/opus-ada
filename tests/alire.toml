@@ -12,9 +12,11 @@ maintainers = ["onox <denkpadje@gmail.com>"]
 maintainers-logins = ["onox"]
 
 [[depends-on]]
+ahven = "^2.9.0"
 opus_ada = "^1.0.0"
 
 [[pins]]
+ahven = { path = "../../ahven" }
 opus_ada = { path = "../" }
 
 [build-switches]
